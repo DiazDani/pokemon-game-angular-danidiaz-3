@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
+import { IniciaSessioRecusDiazComponent } from "./pages/inicia-sessio-recus-diaz/inicia-sessio-recus-diaz.component";
 import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
+  {
+    path: 'isessioDiaz', component:IniciaSessioRecusDiazComponent
+  },
   {
     path: 'home',
     component: HomeComponent

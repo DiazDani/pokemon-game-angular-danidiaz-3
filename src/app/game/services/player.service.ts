@@ -1,6 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
+interface ScoreData {
+  playerName: string;
+  score: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,7 +16,9 @@ export class PlayerService {
   private _highScore: number = 0;
 
   get score(): number {
-    return this._score;
+    const localScore = localStorage.getItem('Punts inicials');
+    const storedScore = localScore ? parseInt(localScore, 10) : 0;
+    return storedScore + this._score;
   }
 
   get highScore(): number {
@@ -25,7 +32,7 @@ export class PlayerService {
   constructor(
     private _router: Router
   ) {
-    this._highScore = parseInt(localStorage.getItem('highscore') || '0');
+    this._highScore = parseInt(sessionStorage.getItem('highscore') || '0');
     console.log(this._highScore);
     // console.log(Number(localStorage.getItem('highScore')))
   }
@@ -34,7 +41,7 @@ export class PlayerService {
     this._score = 0;
     this._lifes = 5;
   }
-  
+
   increasePoints() {
     this._score += 10;
   }
@@ -42,15 +49,35 @@ export class PlayerService {
   decreaseLifes() {
     this._lifes -= 1;
     if (this._lifes <= 0) {
-      
-      if (this._score > this._highScore) this.newHighScore()
-
+      if (this._score > this._highScore) {
+        const playerName = localStorage.getItem('Jugador') || '';
+        const scoreData: ScoreData = {
+          playerName: playerName,
+          score: this._score
+        };
+        this.newHighScore(scoreData);
+      }
       this._router.navigate(['/game/gameover']);
     }
   }
 
-  newHighScore() {
-    this._highScore = this._score;
-    localStorage.setItem('highscore', String(this._highScore));
+  newHighScore(scoreData: ScoreData) {
+    this._highScore = scoreData.score;
+    sessionStorage.setItem('highscore', String(this._highScore));
+
+    const previousScoresJson = localStorage.getItem('previousScores');
+    let previousScores: ScoreData[] = [];
+
+    if (previousScoresJson) {
+      previousScores = JSON.parse(previousScoresJson);
+    }
+
+    previousScores.push(scoreData);
+    localStorage.setItem('previousScores', JSON.stringify(previousScores));
+  }
+
+  getPreviousScores(): ScoreData[] {
+    const previousScoresJson = localStorage.getItem('previousScores');
+    return previousScoresJson ? JSON.parse(previousScoresJson) : [];
   }
 }

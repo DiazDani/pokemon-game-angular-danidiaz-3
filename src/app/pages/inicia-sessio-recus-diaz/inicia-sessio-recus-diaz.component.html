@@ -1,0 +1,28 @@
+<p>inicia-sessio-recus-diaz works!</p>
+<div fxLayout="column"
+     fxLayoutAlign="space-between center">
+  <div>
+    <h1>Inicia Sessió</h1>
+  </div>
+
+  <div fxLayout="row"
+       fxLayout.xs="column"
+       fxLayoutAlign="center center"
+       fxLayoutGap="30px">
+
+    <form>
+      Jugador: <input type="text" [(ngModel)]="jugador" [ngModelOptions]="{standalone: true}">
+      Punts: <input type="number" [(ngModel)]="punts" [ngModelOptions]="{standalone: true}">
+    </form>
+
+
+    <button mat-raised-button
+            color="primary"
+            (click)="guardarDades()"
+            routerLink="/game"
+            class="breath">
+      play
+    </button>
+
+  </div>
+</div>
